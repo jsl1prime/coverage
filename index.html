@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>커버리지_사각형</title>
+    <style>
+      #map {
+        height: 100%;
+      }
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+      #floating-panel {
+        position: absolute;
+        top: 10px;
+        left: 25%;
+        z-index: 5;
+        background-color: #fff;
+        padding: 5px;
+        border: 1px solid #999;
+        text-align: center;
+        font-family: 'Roboto','sans-serif';
+        line-height: 30px;
+        padding-left: 10px;
+      }
+      #floating-panel {
+        background-color: #fff;
+        border: 1px solid #999;
+        left: 25%;
+        padding: 5px;
+        position: absolute;
+        top: 10px;
+        z-index: 5;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="floating-panel">
+      <button onclick="kt_color()">SKT</button>
+      <button onclick="sk_color()">KT</button>
+      <button onclick="uplus_color()">Uplus</button>
+      <button onclick="b5g_color()">5G</button>
+      <button onclick="green_color()">Green</button>
+      <button onclick="blue_color()">Blue</button>
+    </div>
+    <div id="map"></div>
+    <script>
+      var map;
+      var rectangles = {};
+
+      function initMap() {
+        map = new google.maps.Map(document.getElementById('map'), {
+          minZoom: 7,
+          maxZoom: 12,
+          zoom: 8,
+          center: new google.maps.LatLng(36.250943, 127.728344),
+          mapTypeId: google.maps.MapTypeId.ROADMAP,
+          streetViewControl: false,
+          mapTypeControl: false
+        });
+        var script = document.createElement('script');
+        script.src = 'korea_GeoJSONP.js';
+        document.getElementsByTagName('head')[0].appendChild(script);
+      }
+
+      // Loop through the results array and place a marker for each
+      // 결과 배열을 살펴본 후 각각에 대해 마커를 배치하십시오.
+      // set of coordinates.
+      // 좌표 세트
+      window.eqfeed_callback = function(results) {
+        for (var i = 0; i < results.features.length; i++) {
+          var coords = results.features[i].geometry.coordinates;
+          var latLng = new google.maps.LatLng(coords[1],coords[0]);
+           n = coords[0];
+           e = coords[1];
+           o = coords[2];
+
+          var rectangle = new google.maps.Rectangle({
+            strokeColor: '#6918e5',
+            strokeOpacity: 0.8,
+            strokeWeight: 0.2,
+            fillColor: '#6918e5',
+            fillOpacity: o,
+            map: map,
+            bounds: {
+              north: n+0.05,
+              south: n-0.05,
+              east: e+0.05,
+              west: e-0.05
+            }
+          });
+
+          //rectangle에 키값 삽입
+          var key = 'key'+[i];
+          rectangles[key] = rectangle;
+          //console.log(rectangles.key1318);
+        }
+        //console.log(rectangles.key);
+      }
+
+      function kt_color() {
+        for (var key in rectangles) {
+          //console.log(rectangles);
+          rectangles[key].set('fillColor', '#ee3d3d');
+          rectangles[key].set('strokeColor', '#ee3d3d');
+        }
+        //console.log('버튼눌림');
+        //window.eqfeed_callback.rectangle.set('fillColor', '#e6003c');
+        //window.eqfeed_callback.rectangle.setOptions({fillColor: '#e6003c'});
+
+      }
+
+      function sk_color() {
+        for (var key in rectangles) {
+          rectangles[key].set('fillColor', '#e6003c');
+          rectangles[key].set('strokeColor', '#e6003c');
+        }
+      }
+
+      function uplus_color() {
+        for (var key in rectangles) {
+          rectangles[key].set('fillColor', '#e20074');
+          rectangles[key].set('strokeColor', '#e20074');
+        }
+      }
+
+      function b5g_color() {
+        for (var key in rectangles) {
+          rectangles[key].set('fillColor', '#6918e5');
+            rectangles[key].set('strokeColor', '#6918e5');
+        }
+      }
+
+      function green_color() {
+        for (var key in rectangles) {
+          rectangles[key].set('fillColor', 'green');
+            rectangles[key].set('strokeColor', 'green');
+        }
+      }
+
+      function blue_color() {
+        for (var key in rectangles) {
+          rectangles[key].set('fillColor', '#01538d');
+            rectangles[key].set('strokeColor', '#01538d');
+        }
+      }
+
+    </script>
+    <script async defer
+    src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAb5PtMNQ0atA0zWOzo_nryadZcqjsXLWY&callback=initMap">
+    </script>
+  </body>
+</html>
